@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Resources\NewResource;
-use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Models\Wallet;
-use Dotenv\Exception\ValidationException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Notifications\StokNotification;
 use Illuminate\Http\Request;
+use App\Http\Resources\NewResource;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
+use Dotenv\Exception\ValidationException;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class WalletController extends Controller
 {
@@ -59,6 +61,9 @@ class WalletController extends Controller
            $validated['user_id']=$request->user()->id;
            $validated['curr']=$request->post('count')*$request->post('buy_price');
            $wallet= Wallet::create($validated);
+           $user=Auth()->user();
+           $message="تم الاشتراك";
+           Notification::send($user, new StokNotification($validated['curr'],$validated['stok_code'],$request->post('buy_price'),$message));
             return response()->json([
                 'status'=>200,
                 "data"=>$wallet

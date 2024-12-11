@@ -1,17 +1,18 @@
 <?php
 
-use App\Http\Controllers\API\AgendaController;
-use App\Http\Controllers\API\SectorController;
-use App\Http\Controllers\API\StrategiesControler;
-use App\Http\Controllers\API\PrivacyController;
-use App\Http\Controllers\API\SFreeController;
-use App\Http\Controllers\API\WalletController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FilterController;
 use App\Http\Controllers\API\StokController;
+use App\Http\Controllers\API\SFreeController;
+use App\Http\Controllers\API\AgendaController;
+use App\Http\Controllers\API\SectorController;
+use App\Http\Controllers\API\WalletController;
 use App\Http\Controllers\API\NewstokController;
+use App\Http\Controllers\API\PrivacyController;
 use App\Http\Controllers\API\Auth\UserController;
+use App\Http\Controllers\API\StrategiesControler;
+use App\Http\Controllers\API\NotificationController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -67,6 +68,14 @@ Route::prefix('mobile')->group(function () {
         Route::post('/wallet_update/{id}','update')->middleware('auth:sanctum');
         Route::delete('/wallet_delete/{id}','destroy')->middleware('auth:sanctum');
     });
+    Route::controller(NotificationController::class)->group(function(){
+        Route::get('/notifications','notifications')->middleware('auth:sanctum');
+        Route::get('/auth_unread_notifications','auth_unread_notifications')->middleware('auth:sanctum');
+        Route::get('/auth_read_notifications','auth_read_notifications')->middleware('auth:sanctum');
+        Route::get('/auth_read_notification/{id}','auth_read_notification')->middleware('auth:sanctum');
+        Route::DELETE('/auth_delete_notifications','auth_delete_notifications')->middleware('auth:sanctum');
+    });
+
     Route::controller(SFreeController::class)->group(function(){
         Route::get('/sfree','index');
     });
